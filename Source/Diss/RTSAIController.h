@@ -15,7 +15,7 @@ class DISS_API ARTSAIController : public AAIController
 	GENERATED_BODY()
 	
 public:
-	//explicit ARTSAIController(FObjectInitializer, const& ObjectInitializer);
+	ARTSAIController();
 
 protected:
 	virtual void OnPossess(APawn* InPawn) override;
