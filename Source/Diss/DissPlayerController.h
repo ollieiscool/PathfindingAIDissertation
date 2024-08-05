@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "Templates/SubclassOf.h"
 #include "GameFramework/PlayerController.h"
+#include "FormationClass.h"
+#include "RTSUnit.h"
 #include "DissPlayerController.generated.h"
 
 /** Forward declaration to improve compiling times */
@@ -57,6 +59,18 @@ protected:
 	void OnSetDestinationReleased();
 	void OnTouchTriggered();
 	void OnTouchReleased();
+
+	//Unit Navigation and formation logic, Oliver Perrin.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = DissRTSController, meta = (AllowPrivateAccess = "true"))
+	FVector MouseHitLocation;
+
+	UFormationClass* formation;
+
+	UFUNCTION(BlueprintCallable, Category = "AI")
+	void DrawFormation(const TArray<AActor*>& SelectedUnits);
+
+	UPROPERTY(EditAnywhere)
+	 TSubclassOf<AActor> actorToSpawn;
 
 private:
 	FVector CachedDestination;

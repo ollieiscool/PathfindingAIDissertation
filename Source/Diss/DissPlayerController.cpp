@@ -11,6 +11,7 @@
 #include "InputActionValue.h"
 #include "EnhancedInputSubsystems.h"
 #include "Engine/LocalPlayer.h"
+#include "RTSUnit.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -20,6 +21,8 @@ ADissPlayerController::ADissPlayerController()
 	DefaultMouseCursor = EMouseCursor::Default;
 	CachedDestination = FVector::ZeroVector;
 	FollowTime = 0.f;
+
+	formation = NewObject<UFormationClass>();
 }
 
 void ADissPlayerController::BeginPlay()
@@ -122,4 +125,14 @@ void ADissPlayerController::OnTouchReleased()
 {
 	bIsTouch = false;
 	OnSetDestinationReleased();
+}
+
+//Unit Nav and formation logic, Oliver Perrin
+void ADissPlayerController::DrawFormation(const TArray<AActor*>& SelectedUnits) {
+	TArray<FVector> FormationPos = formation->GetPositions(MouseHitLocation, SelectedUnits.Num());
+	
+	for (int i = 0; i < FormationPos.Num(); i++) {
+		FActorSpawnParameters SpawnInfo;
+		GetWorld()->SpawnActor<AActor>(actorToSpawn, FormationPos[i], FRotator(0,0,0), SpawnInfo);
+	}
 }

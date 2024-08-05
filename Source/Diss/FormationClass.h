@@ -10,8 +10,15 @@
  * 
  */
 UCLASS()
-class DISS_API UMyClass : public UObject
+class DISS_API UFormationClass : public UObject
 {
 	GENERATED_BODY()
 	
+public:
+	UFormationClass();
+
+	~UFormationClass();
+
+	UFUNCTION(Category = "AI")
+	TArray<FVector> GetPositions(FVector MouseHitLocation, int NumOfUnitsSelected);
 };
