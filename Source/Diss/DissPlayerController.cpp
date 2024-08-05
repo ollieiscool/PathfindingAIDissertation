@@ -133,6 +133,14 @@ void ADissPlayerController::DrawFormation(const TArray<AActor*>& SelectedUnits) 
 	
 	for (int i = 0; i < FormationPos.Num(); i++) {
 		FActorSpawnParameters SpawnInfo;
-		GetWorld()->SpawnActor<AActor>(actorToSpawn, FormationPos[i], FRotator(0,0,0), SpawnInfo);
+		if ((i+1)%2==0){
+			GetWorld()->SpawnActor<AActor>(actorToSpawn, FormationPos[i], FRotator(0, 0, 0), SpawnInfo);
+		}
+		else if (i == 0) {
+			GetWorld()->SpawnActor<AActor>(actorToSpawn, FormationPos[i], FRotator(0, 0, 0), SpawnInfo);
+		}
+		else {
+			GetWorld()->SpawnActor<AActor>(actorToSpawn, (FormationPos[i]*-1), FRotator(0, 0, 0), SpawnInfo);
+		}
 	}
 }
