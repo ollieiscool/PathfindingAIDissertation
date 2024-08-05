@@ -11,15 +11,32 @@ UFormationClass::~UFormationClass() {
 
 }
 
-TArray<FVector> UFormationClass::GetPositions(FVector MouseHitLocation, int NumOfUnitsSelected) {
+TArray<FVector> UFormationClass::GetPositions(FVector MouseHitLocation, int NumOfUnitsSelected, int LengthOfLine) {
 	TArray<FVector> FormationPositions;
+	float x = 0;
+	float y = 80;
 	FVector FirstPos;
-	FVector NextPos = FVector(0, 200, 0);
+	FVector NextPos;
 	
 	FirstPos = MouseHitLocation;
 	for (int i = 0; i < NumOfUnitsSelected; i++) {
-		FormationPositions.Add(FirstPos);
-		FirstPos += NextPos;
+		if (i % LengthOfLine == 0 && i != 0) {
+			y -= y;
+			x -= 80;
+		}
+
+		NextPos = FVector(x, y, 0);
+
+		if (i == 0) {
+			FormationPositions.Add(FirstPos);
+		}
+		else {
+			FormationPositions.Add(FirstPos + NextPos);
+			if (i % 2 == 0) {
+				y -= 80;
+			}
+			y *= -1;
+		}
 	}
 	return FormationPositions;
 }

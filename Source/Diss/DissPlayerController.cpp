@@ -129,18 +129,10 @@ void ADissPlayerController::OnTouchReleased()
 
 //Unit Nav and formation logic, Oliver Perrin
 void ADissPlayerController::DrawFormation(const TArray<AActor*>& SelectedUnits) {
-	TArray<FVector> FormationPos = formation->GetPositions(MouseHitLocation, SelectedUnits.Num());
+	TArray<FVector> FormationPos = formation->GetPositions(MouseHitLocation, SelectedUnits.Num(), 5);
 	
 	for (int i = 0; i < FormationPos.Num(); i++) {
 		FActorSpawnParameters SpawnInfo;
-		if ((i+1)%2==0){
-			GetWorld()->SpawnActor<AActor>(actorToSpawn, FormationPos[i], FRotator(0, 0, 0), SpawnInfo);
-		}
-		else if (i == 0) {
-			GetWorld()->SpawnActor<AActor>(actorToSpawn, FormationPos[i], FRotator(0, 0, 0), SpawnInfo);
-		}
-		else {
-			GetWorld()->SpawnActor<AActor>(actorToSpawn, (FormationPos[i]*-1), FRotator(0, 0, 0), SpawnInfo);
-		}
+		GetWorld()->SpawnActor<AActor>(actorToSpawn, FormationPos[i], FRotator(0, 0, 0), SpawnInfo);
 	}
 }
