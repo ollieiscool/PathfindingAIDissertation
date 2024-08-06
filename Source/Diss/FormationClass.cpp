@@ -11,10 +11,11 @@ UFormationClass::~UFormationClass() {
 
 }
 
-TArray<FVector> UFormationClass::GetPositions(FVector MouseHitLocation, int NumOfUnitsSelected, int LengthOfLine) {
+//Adds a new position on alternating sides of the MouseHitLocation based on the length of the line and unit offset
+TArray<FVector> UFormationClass::GetPositions(FVector MouseHitLocation, int NumOfUnitsSelected, int LengthOfLine, float UnitOffset) {
 	TArray<FVector> FormationPositions;
 	float x = 0;
-	float y = 80;
+	float y = UnitOffset;
 	FVector FirstPos;
 	FVector NextPos;
 	
@@ -22,7 +23,7 @@ TArray<FVector> UFormationClass::GetPositions(FVector MouseHitLocation, int NumO
 	for (int i = 0; i < NumOfUnitsSelected; i++) {
 		if (i % LengthOfLine == 0 && i != 0) {
 			y -= y;
-			x -= 80;
+			x -= UnitOffset;
 		}
 
 		NextPos = FVector(x, y, 0);
@@ -33,7 +34,7 @@ TArray<FVector> UFormationClass::GetPositions(FVector MouseHitLocation, int NumO
 		else {
 			FormationPositions.Add(FirstPos + NextPos);
 			if (i % 2 == 0) {
-				y -= 80;
+				y -= UnitOffset;
 			}
 			y *= -1;
 		}

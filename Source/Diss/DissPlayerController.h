@@ -66,11 +66,20 @@ protected:
 
 	UFormationClass* formation;
 
-	UFUNCTION(BlueprintCallable, Category = "AI")
+	UFUNCTION(BlueprintCallable, Category = "Formation Navigation")
 	void DrawFormation(const TArray<AActor*>& SelectedUnits);
+
+	UFUNCTION(BlueprintCallable, Category = "Formation Navigation")
+	FVector FindClosestPoint(FVector CurrentPos);
+
+	UFUNCTION(BlueprintCallable, Category = "Formation Navigation")
+	TArray<AActor*> SortSelectedUnitsArray(const TArray<AActor*>& SelectedUnits);
 
 	UPROPERTY(EditAnywhere)
 	 TSubclassOf<AActor> actorToSpawn;
+
+	 UPROPERTY(EditAnywhere)
+	 TArray<FVector> FormationPos;
 
 private:
 	FVector CachedDestination;
@@ -78,5 +87,4 @@ private:
 	bool bIsTouch; // Is it a touch device
 	float FollowTime; // For how long it has been pressed
 };
-
 

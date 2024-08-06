@@ -19,6 +19,6 @@ public:
 
 	~UFormationClass();
 
-	UFUNCTION(Category = "AI")
-	TArray<FVector> GetPositions(FVector MouseHitLocation, int NumOfUnitsSelected, int LengthOfLine);
+	UFUNCTION(Category = "Formation Navigation")
+	TArray<FVector> GetPositions(FVector MouseHitLocation, int NumOfUnitsSelected, int LengthOfLine = 5, float UnitOffset = 80);
 };
