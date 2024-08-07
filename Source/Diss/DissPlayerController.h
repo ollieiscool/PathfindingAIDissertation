@@ -5,6 +5,9 @@
 #include "CoreMinimal.h"
 #include "Templates/SubclassOf.h"
 #include "GameFramework/PlayerController.h"
+#include "FormationClass.h"
+#include "PositionInFormation.h"
+#include "RTSUnit.h"
 #include "DissPlayerController.generated.h"
 
 /** Forward declaration to improve compiling times */
@@ -58,11 +61,34 @@ protected:
 	void OnTouchTriggered();
 	void OnTouchReleased();
 
+	//Unit Navigation and formation logic, Oliver Perrin.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = DissRTSController, meta = (AllowPrivateAccess = "true"))
+	FVector MouseHitLocation;
+
+	UFormationClass* formation;
+
+	UFUNCTION(BlueprintCallable, Category = "Formation Navigation")
+	void DrawFormation(const TArray<AActor*>& SelectedUnits);
+
+	UFUNCTION(BlueprintCallable, Category = "Formation Navigation")
+	APositionInFormation* FindClosestPoint(FVector CurrentPos);
+
+	UFUNCTION(BlueprintCallable, Category = "Formation Navigation")
+	TArray<AActor*> SortSelectedUnitsArray(const TArray<AActor*>& SelectedUnits);
+
+	UPROPERTY(EditAnywhere)
+	 TSubclassOf<AActor> actorToSpawn;
+
+	 UPROPERTY(EditAnywhere)
+	 TArray<APositionInFormation*> Positions;
+
+	 UPROPERTY(EditAnywhere)
+	 TArray<FVector> FormationPos;
+
 private:
 	FVector CachedDestination;
 
 	bool bIsTouch; // Is it a touch device
 	float FollowTime; // For how long it has been pressed
 };
-
 

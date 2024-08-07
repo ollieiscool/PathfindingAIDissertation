@@ -11,6 +11,7 @@
 #include "InputActionValue.h"
 #include "EnhancedInputSubsystems.h"
 #include "Engine/LocalPlayer.h"
+#include "RTSUnit.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -20,6 +21,8 @@ ADissPlayerController::ADissPlayerController()
 	DefaultMouseCursor = EMouseCursor::Default;
 	CachedDestination = FVector::ZeroVector;
 	FollowTime = 0.f;
+
+	formation = NewObject<UFormationClass>();
 }
 
 void ADissPlayerController::BeginPlay()
@@ -122,4 +125,75 @@ void ADissPlayerController::OnTouchReleased()
 {
 	bIsTouch = false;
 	OnSetDestinationReleased();
+}
+
+//Unit Nav and formation logic, Oliver Perrin
+void ADissPlayerController::DrawFormation(const TArray<AActor*>& SelectedUnits) {
+	FormationPos = formation->GetPositions(MouseHitLocation, SelectedUnits.Num(), 6, 80);
+
+	APositionInFormation* NewPos;
+	for (int i = 0; i < FormationPos.Num(); i++) {
+		NewPos = NewObject<APositionInFormation>();
+		NewPos->SetPosition(FormationPos[i]);
+		Positions.Add(NewPos);
+	}
+	
+	//Spawns instances of the RTSUnit class to visualise formation, TESTING ONLY
+	//for (int i = 0; i < FormationPos.Num(); i++) {
+	//	FActorSpawnParameters SpawnInfo;
+	//	GetWorld()->SpawnActor<AActor>(actorToSpawn, FormationPos[i], FRotator(0, 0, 0), SpawnInfo);
+	//}
+}
+
+APositionInFormation* ADissPlayerController::FindClosestPoint(FVector CurrentPos) {
+	float ShortestDist = 1000000000000.0;
+	float CurrentDist;
+	int ClosestPos = 0;
+
+	if (Positions.Num() > 0) {
+		for (int i = 0; i < Positions.Num(); i++) {
+			CurrentDist = FVector::Distance(Positions[i]->GetPosition(), CurrentPos);
+			
+			if (CurrentDist < ShortestDist && Positions[i]->GetIsReserved() == false) {
+				ShortestDist = CurrentDist;
+				ClosestPos = i;
+			}
+		}
+		
+		if (Positions[ClosestPos] != 0) {
+			Positions[ClosestPos]->SetIsReserved(true);
+			return Positions[ClosestPos];
+		}
+		else {
+			return 0;
+		}
+		
+	}
+	else {
+		return 0;
+	}
+}
+
+TArray<AActor*> ADissPlayerController::SortSelectedUnitsArray(const TArray<AActor*>& SelectedUnits) {
+	TArray<AActor*> SortedArray;
+	TMap<float, int> Distances;
+	float DistFromMouseHit;
+
+	if (SelectedUnits.Num() > 0) {
+		for (int i = 0; i < SelectedUnits.Num(); i++) {
+			DistFromMouseHit = FVector::Distance(MouseHitLocation, (SelectedUnits[i])->GetActorLocation());
+			Distances.Add(DistFromMouseHit, i);
+		}
+		Distances.KeySort([](float a, float b){
+			return a > b;
+		});
+
+		for (auto& Elem : Distances) {
+			SortedArray.Add(SelectedUnits[Elem.Value]);
+		}
+		return SortedArray;
+	}
+	else {
+		return SortedArray;
+	}
 }
