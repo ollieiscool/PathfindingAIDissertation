@@ -76,6 +76,12 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "Formation Navigation")
 	TArray<AActor*> SortSelectedUnitsArray(const TArray<AActor*>& SelectedUnits);
 
+	UFUNCTION(BlueprintCallable, Category = "Formation Navigation")
+	void MoveFormation();
+
+	UFUNCTION(BlueprintCallable, Category = "Formation Navigation")
+	void ClearPositionsArray();
+
 	UPROPERTY(EditAnywhere)
 	 TSubclassOf<AActor> actorToSpawn;
 

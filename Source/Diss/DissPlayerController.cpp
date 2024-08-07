@@ -176,24 +176,35 @@ APositionInFormation* ADissPlayerController::FindClosestPoint(FVector CurrentPos
 
 TArray<AActor*> ADissPlayerController::SortSelectedUnitsArray(const TArray<AActor*>& SelectedUnits) {
 	TArray<AActor*> SortedArray;
-	TMap<float, int> Distances;
+	TMap<int, float> Distances;
 	float DistFromMouseHit;
 
 	if (SelectedUnits.Num() > 0) {
 		for (int i = 0; i < SelectedUnits.Num(); i++) {
 			DistFromMouseHit = FVector::Distance(MouseHitLocation, (SelectedUnits[i])->GetActorLocation());
-			Distances.Add(DistFromMouseHit, i);
+			Distances.Add(i, DistFromMouseHit);
 		}
-		Distances.KeySort([](float a, float b){
+		Distances.ValueSort([](float a, float b){
 			return a > b;
 		});
 
 		for (auto& Elem : Distances) {
-			SortedArray.Add(SelectedUnits[Elem.Value]);
+			SortedArray.Add(SelectedUnits[Elem.Key]);
 		}
 		return SortedArray;
 	}
 	else {
 		return SortedArray;
 	}
+}
+
+void ADissPlayerController::MoveFormation() {
+	formation->MoveExistingFormation(Positions, MouseHitLocation, 6, 80);
+	for (int i = 0; i < Positions.Num(); i++) {
+		Positions[i]->SetIsReserved(false);
+	}
+}
+
+void ADissPlayerController::ClearPositionsArray() {
+	Positions.Empty();
 }

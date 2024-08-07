@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
-//#include "PositionInFormation.h"
+#include "PositionInFormation.h"
 #include "FormationClass.generated.h"
 
 /**
@@ -22,4 +22,7 @@ public:
 
 	UFUNCTION(Category = "Formation Navigation")
 	TArray<FVector> GetPositions(FVector MouseHitLocation, int NumOfUnitsSelected, int LengthOfLine = 5, float UnitOffset = 80);
+
+	UFUNCTION(BlueprintCallable, Category = "Formation Navigation")
+	void MoveExistingFormation(TArray<APositionInFormation*> Positions, FVector MouseHitLocation, int LengthOfLine, float UnitOffset);
 };

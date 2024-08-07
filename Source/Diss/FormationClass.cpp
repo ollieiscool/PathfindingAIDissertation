@@ -41,3 +41,31 @@ TArray<FVector> UFormationClass::GetPositions(FVector MouseHitLocation, int NumO
 	}
 	return FormationPositions;
 }
+
+void UFormationClass::MoveExistingFormation(TArray<APositionInFormation*> Positions, FVector MouseHitLocation, int LengthOfLine, float UnitOffset) {
+	float x = 0;
+	float y = UnitOffset;
+	FVector FirstPos;
+	FVector NextPos;
+
+	FirstPos = MouseHitLocation;
+	for (int i = 0; i < Positions.Num(); i++) {
+		if (i % LengthOfLine == 0 && i != 0) {
+			y -= y;
+			x -= UnitOffset;
+		}
+
+		NextPos = FVector(x, y, 0);
+
+		if (i == 0) {
+			Positions[i]->SetPosition(FirstPos);
+		}
+		else {
+			Positions[i]->SetPosition(FirstPos + NextPos);
+			if (i % 2 == 0) {
+				y -= UnitOffset;
+			}
+			y *= -1;
+		}
+	}
+}
