@@ -130,31 +130,47 @@ void ADissPlayerController::OnTouchReleased()
 //Unit Nav and formation logic, Oliver Perrin
 void ADissPlayerController::DrawFormation(const TArray<AActor*>& SelectedUnits) {
 	FormationPos = formation->GetPositions(MouseHitLocation, SelectedUnits.Num(), 6, 80);
+
+	APositionInFormation* NewPos;
+	for (int i = 0; i < FormationPos.Num(); i++) {
+		NewPos = NewObject<APositionInFormation>();
+		NewPos->SetPosition(FormationPos[i]);
+		Positions.Add(NewPos);
+	}
 	
 	//Spawns instances of the RTSUnit class to visualise formation, TESTING ONLY
-	/*for (int i = 0; i < FormationPos.Num(); i++) {
-		FActorSpawnParameters SpawnInfo;
-		GetWorld()->SpawnActor<AActor>(actorToSpawn, FormationPos[i], FRotator(0, 0, 0), SpawnInfo);
-	}*/
+	//for (int i = 0; i < FormationPos.Num(); i++) {
+	//	FActorSpawnParameters SpawnInfo;
+	//	GetWorld()->SpawnActor<AActor>(actorToSpawn, FormationPos[i], FRotator(0, 0, 0), SpawnInfo);
+	//}
 }
 
-FVector ADissPlayerController::FindClosestPoint(FVector CurrentPos) {
+APositionInFormation* ADissPlayerController::FindClosestPoint(FVector CurrentPos) {
 	float ShortestDist = 1000000000000.0;
 	float CurrentDist;
 	int ClosestPos = 0;
 
-	if (FormationPos.Num() > 0) {
-		for (int i = 0; i < FormationPos.Num(); i++) {
-			CurrentDist = FVector::Distance(FormationPos[i], CurrentPos);
-			if (CurrentDist < ShortestDist) {
+	if (Positions.Num() > 0) {
+		for (int i = 0; i < Positions.Num(); i++) {
+			CurrentDist = FVector::Distance(Positions[i]->GetPosition(), CurrentPos);
+			
+			if (CurrentDist < ShortestDist && Positions[i]->GetIsReserved() == false) {
 				ShortestDist = CurrentDist;
 				ClosestPos = i;
 			}
 		}
-		return FormationPos[ClosestPos];
+		
+		if (Positions[ClosestPos] != 0) {
+			Positions[ClosestPos]->SetIsReserved(true);
+			return Positions[ClosestPos];
+		}
+		else {
+			return 0;
+		}
+		
 	}
 	else {
-		return CurrentPos;
+		return 0;
 	}
 }
 

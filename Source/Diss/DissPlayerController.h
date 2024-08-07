@@ -6,6 +6,7 @@
 #include "Templates/SubclassOf.h"
 #include "GameFramework/PlayerController.h"
 #include "FormationClass.h"
+#include "PositionInFormation.h"
 #include "RTSUnit.h"
 #include "DissPlayerController.generated.h"
 
@@ -70,13 +71,16 @@ protected:
 	void DrawFormation(const TArray<AActor*>& SelectedUnits);
 
 	UFUNCTION(BlueprintCallable, Category = "Formation Navigation")
-	FVector FindClosestPoint(FVector CurrentPos);
+	APositionInFormation* FindClosestPoint(FVector CurrentPos);
 
 	UFUNCTION(BlueprintCallable, Category = "Formation Navigation")
 	TArray<AActor*> SortSelectedUnitsArray(const TArray<AActor*>& SelectedUnits);
 
 	UPROPERTY(EditAnywhere)
 	 TSubclassOf<AActor> actorToSpawn;
+
+	 UPROPERTY(EditAnywhere)
+	 TArray<APositionInFormation*> Positions;
 
 	 UPROPERTY(EditAnywhere)
 	 TArray<FVector> FormationPos;
