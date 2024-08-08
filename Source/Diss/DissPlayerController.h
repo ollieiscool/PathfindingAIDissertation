@@ -82,6 +82,9 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "Formation Navigation")
 	void ClearPositionsArray();
 
+	UFUNCTION(BlueprintCallable, Category = "Formation Navigation")
+	void MovePositionsTowardsTarget(float dt);
+
 	UPROPERTY(EditAnywhere)
 	 TSubclassOf<AActor> actorToSpawn;
 
@@ -90,6 +93,9 @@ protected:
 
 	 UPROPERTY(EditAnywhere)
 	 TArray<FVector> FormationPos;
+
+	 UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	 bool IsMoving;
 
 private:
 	FVector CachedDestination;

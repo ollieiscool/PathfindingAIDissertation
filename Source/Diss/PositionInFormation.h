@@ -34,6 +34,16 @@ public:
 	void SetPosition(FVector NewPosition) {
 		Position = NewPosition;
 	};
+
+	UFUNCTION(BlueprintCallable, Category = "Formation Navigation")
+	FVector GetTargetPosition() {
+		return TargetPosition;
+	};
+
+	UFUNCTION(BlueprintCallable, Category = "Formation Navigation")
+	void SetTargetPosition(FVector NewTargetPosition) {
+		TargetPosition = NewTargetPosition;
+	};
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -43,6 +53,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Formation Navigation")
 	FVector Position;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Formation Navigation")
+	FVector TargetPosition;
 
 public:	
 	// Called every frame

@@ -202,6 +202,24 @@ void ADissPlayerController::MoveFormation() {
 	formation->MoveExistingFormation(Positions, MouseHitLocation, 6, 80);
 	for (int i = 0; i < Positions.Num(); i++) {
 		Positions[i]->SetIsReserved(false);
+		IsMoving = true;
+	}
+}
+
+void ADissPlayerController::MovePositionsTowardsTarget(float dt) {
+	int SuccessfulTranslations = 0;
+	for (int i = 0; i < Positions.Num(); i++) {
+		FVector Direction = Positions[i]->GetTargetPosition() - Positions[i]->GetPosition();
+		Direction.Normalize();
+		if (Positions[i]->GetPosition() != Positions[i]->GetTargetPosition()) {
+			Positions[i]->SetPosition(Positions[i]->GetPosition() + (Direction * dt * 1000));
+		}
+		else if (Positions[i]->GetPosition() == Positions[i]->GetTargetPosition()) {
+			SuccessfulTranslations += 1;
+		}
+	}
+	if (SuccessfulTranslations == Positions.Num()) {
+		IsMoving = false;
 	}
 }
 

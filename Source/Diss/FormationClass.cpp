@@ -20,6 +20,7 @@ TArray<FVector> UFormationClass::GetPositions(FVector MouseHitLocation, int NumO
 	FVector NextPos;
 	
 	FirstPos = MouseHitLocation;
+	PreviousHitLocation = MouseHitLocation;
 	for (int i = 0; i < NumOfUnitsSelected; i++) {
 		if (i % LengthOfLine == 0 && i != 0) {
 			y -= y;
@@ -58,10 +59,10 @@ void UFormationClass::MoveExistingFormation(TArray<APositionInFormation*> Positi
 		NextPos = FVector(x, y, 0);
 
 		if (i == 0) {
-			Positions[i]->SetPosition(FirstPos);
+			Positions[i]->SetTargetPosition(FirstPos);
 		}
 		else {
-			Positions[i]->SetPosition(FirstPos + NextPos);
+			Positions[i]->SetTargetPosition(FirstPos + NextPos);
 			if (i % 2 == 0) {
 				y -= UnitOffset;
 			}

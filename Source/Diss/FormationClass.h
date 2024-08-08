@@ -25,4 +25,8 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Formation Navigation")
 	void MoveExistingFormation(TArray<APositionInFormation*> Positions, FVector MouseHitLocation, int LengthOfLine, float UnitOffset);
+
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Formation Navigation")
+	FVector PreviousHitLocation;
 };
