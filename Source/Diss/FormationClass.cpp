@@ -2,6 +2,7 @@
 
 
 #include "FormationClass.h"
+#include "NavigationSystem.h"
 
 UFormationClass::UFormationClass() {
 
@@ -12,8 +13,9 @@ UFormationClass::~UFormationClass() {
 }
 
 //Adds a new position on alternating sides of the MouseHitLocation based on the length of the line and unit offset
-TArray<FVector> UFormationClass::GetPositions(FVector MouseHitLocation, int NumOfUnitsSelected, int LengthOfLine, float UnitOffset) {
-	TArray<FVector> FormationPositions;
+void UFormationClass::GetPositions(TArray<FVector>& FormationPos, TArray<APositionInFormation*> Positions, FVector MouseHitLocation, int NumOfUnitsSelected, int LengthOfLine, float UnitOffset, FRotator CameraRotation, bool IsMoving) {
+	//UNavigationSystemV1* NavSys = FNavigationSystem::GetCurrent<UNavigationSystemV1>(GetWorld());
+	//TArray<FVector> FormationPositions;
 	float x = 0;
 	float y = UnitOffset;
 	FVector FirstPos;
@@ -27,46 +29,62 @@ TArray<FVector> UFormationClass::GetPositions(FVector MouseHitLocation, int NumO
 			x -= UnitOffset;
 		}
 
-		NextPos = FVector(x, y, 0);
+		NextPos = CameraRotation.RotateVector(FVector(x, y, 0));
 
 		if (i == 0) {
-			FormationPositions.Add(FirstPos);
+			if (IsMoving == false) {
+				FormationPos.Add(FirstPos);
+			}
+			else {
+				Positions[i]->SetPosition(FirstPos);
+			}
 		}
 		else {
-			FormationPositions.Add(FirstPos + NextPos);
+			if (IsMoving == false) {
+				FormationPos.Add(FirstPos + NextPos);
+			}
+			else {
+				Positions[i]->SetPosition(FirstPos + NextPos);
+			}
+			
 			if (i % 2 == 0) {
 				y -= UnitOffset;
 			}
 			y *= -1;
 		}
 	}
-	return FormationPositions;
 }
 
-void UFormationClass::MoveExistingFormation(TArray<APositionInFormation*> Positions, FVector MouseHitLocation, int LengthOfLine, float UnitOffset) {
+TArray<FVector> UFormationClass::DragLine(FVector MouseHitLocation, int NumOfUnitsSelected, int LengthOfLine, float UnitOffset, FRotator LineRotation) {
 	float x = 0;
 	float y = UnitOffset;
 	FVector FirstPos;
 	FVector NextPos;
+	TArray<FVector> Positions;
+	bool StartLine = true;
 
 	FirstPos = MouseHitLocation;
-	for (int i = 0; i < Positions.Num(); i++) {
-		if (i % LengthOfLine == 0 && i != 0) {
-			y -= y;
+	PreviousHitLocation = MouseHitLocation;
+	for (int i = 0; i < NumOfUnitsSelected; i++) {
+		if (y > UnitOffset * LengthOfLine) {
+			y = UnitOffset;
 			x -= UnitOffset;
+			StartLine = true;
 		}
+		NextPos = LineRotation.RotateVector(FVector(x, y, 0));
 
-		NextPos = FVector(x, y, 0);
-
-		if (i == 0) {
-			Positions[i]->SetTargetPosition(FirstPos);
+		if (StartLine == true) {
+			Positions.Add(FirstPos);
+			StartLine = false;
 		}
 		else {
-			Positions[i]->SetTargetPosition(FirstPos + NextPos);
-			if (i % 2 == 0) {
-				y -= UnitOffset;
-			}
-			y *= -1;
+			Positions.Add(FirstPos + NextPos);
+			y += UnitOffset;
 		}
 	}
+	return Positions;
+}
+
+FVector UFormationClass::Find8thOfWay(FVector TargetPosition, FVector CurrentPos) {
+	return (TargetPosition - CurrentPos) / 8;
 }

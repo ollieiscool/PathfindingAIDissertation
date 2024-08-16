@@ -21,10 +21,13 @@ public:
 	~UFormationClass();
 
 	UFUNCTION(Category = "Formation Navigation")
-	TArray<FVector> GetPositions(FVector MouseHitLocation, int NumOfUnitsSelected, int LengthOfLine = 5, float UnitOffset = 80);
+	void GetPositions(TArray<FVector>& FormationPos, TArray<APositionInFormation*> Positions, FVector MouseHitLocation, int NumOfUnitsSelected, int LengthOfLine = 5, float UnitOffset = 80, FRotator CameraRotation = FRotator(0,0,0), bool IsMoving = false);
 
 	UFUNCTION(BlueprintCallable, Category = "Formation Navigation")
-	void MoveExistingFormation(TArray<APositionInFormation*> Positions, FVector MouseHitLocation, int LengthOfLine, float UnitOffset);
+	TArray<FVector> DragLine(FVector MouseHitLocation, int NumOfUnitsSelected, int LengthOfLine, float UnitOffset, FRotator LineRotation);
+
+	UFUNCTION(Category = "Formation Navigation")
+	FVector Find8thOfWay(FVector TargetPosition, FVector CurrentPos);
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Formation Navigation")
