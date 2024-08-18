@@ -128,14 +128,16 @@ void ADissPlayerController::OnTouchReleased()
 }
 
 //Unit Nav and formation logic, Oliver Perrin
-void ADissPlayerController::DrawFormation(const TArray<AActor*>& SelectedUnits) {
-	FormationPos = formation->GetPositions(MouseHitLocation, SelectedUnits.Num(), 6, 80);
-
-	APositionInFormation* NewPos;
-	for (int i = 0; i < FormationPos.Num(); i++) {
-		NewPos = NewObject<APositionInFormation>();
-		NewPos->SetPosition(FormationPos[i]);
-		Positions.Add(NewPos);
+void ADissPlayerController::DrawFormation(const TArray<AActor*>& SelectedUnits, FRotator CameraRotation) {
+	if (Positions.IsEmpty()) {
+		formation->GetPositions(FormationPos, Positions, MouseHitLocation, SelectedUnits.Num(), 6, 80, CameraRotation, false);
+		FillPositionsArray();
+	}
+	else {
+		formation->GetPositions(FormationPos, Positions, MouseHitLocation, SelectedUnits.Num(), 6, 80, CameraRotation, true);
+		for (int i = 0; i < Positions.Num(); i++) {
+			Positions[i]->SetIsReserved(false); 
+		}
 	}
 	
 	//Spawns instances of the RTSUnit class to visualise formation, TESTING ONLY
@@ -176,24 +178,92 @@ APositionInFormation* ADissPlayerController::FindClosestPoint(FVector CurrentPos
 
 TArray<AActor*> ADissPlayerController::SortSelectedUnitsArray(const TArray<AActor*>& SelectedUnits) {
 	TArray<AActor*> SortedArray;
-	TMap<float, int> Distances;
+	TMap<int, float> Distances;
 	float DistFromMouseHit;
 
 	if (SelectedUnits.Num() > 0) {
 		for (int i = 0; i < SelectedUnits.Num(); i++) {
 			DistFromMouseHit = FVector::Distance(MouseHitLocation, (SelectedUnits[i])->GetActorLocation());
-			Distances.Add(DistFromMouseHit, i);
+			Distances.Add(i, DistFromMouseHit);
 		}
-		Distances.KeySort([](float a, float b){
+		Distances.ValueSort([](float a, float b){
 			return a > b;
 		});
 
 		for (auto& Elem : Distances) {
-			SortedArray.Add(SelectedUnits[Elem.Value]);
+			SortedArray.Add(SelectedUnits[Elem.Key]);
 		}
 		return SortedArray;
 	}
 	else {
 		return SortedArray;
+	}
+}
+
+TArray<FVector> ADissPlayerController::FindWaypoints(FVector TargetPosition, FVector CurrentPos) {
+	FVector Eighth = formation->Find8thOfWay(TargetPosition, CurrentPos);
+	TArray<FVector> Waypoints;
+	Waypoints.Add(Eighth + CurrentPos);
+	Waypoints.Add(Eighth + Eighth + CurrentPos);
+	Waypoints.Add(Eighth + Eighth + Eighth + CurrentPos);
+
+	Waypoints.Add(TargetPosition);
+	return Waypoints;
+}
+
+void ADissPlayerController::ClearPositionsArray() {
+	Positions.Empty();
+}
+
+TArray<FVector> ADissPlayerController::DragFormation(const TArray<AActor*>& SelectedUnits, FVector StartPos, float DifferenceInPos, FVector MiddlePosition, FRotator LineRotation) {
+	float divided = DifferenceInPos / 80;
+	FString s = FString::FromInt((int)divided);
+	int LineLength = (int)divided;
+	formation->DragLine(FormationPos, StartPos, SelectedUnits.Num(), LineLength + 1, 80, LineRotation);
+	return FormationPos;
+}
+
+void ADissPlayerController::DrawDraggedFormation(TArray<FVector> PositionsToDraw) {
+	if (Positions.IsEmpty()) {
+		FormationPos = PositionsToDraw;
+		FillPositionsArray();
+	}
+	else {
+		
+		for (int i = 0; i < PositionsToDraw.Num(); i++) {
+			Positions[i]->SetPosition(PositionsToDraw[i]);
+			Positions[i]->SetIsReserved(false);
+		}
+	}
+
+}
+
+void ADissPlayerController::ClearFormationArray() {
+	FormationPos.Empty();
+}
+
+void ADissPlayerController::FillPositionsArray() {
+	APositionInFormation* NewPos;
+	for (int i = 0; i < FormationPos.Num(); i++) {
+		NewPos = NewObject<APositionInFormation>();
+		NewPos->SetPosition(FormationPos[i]);
+		Positions.Add(NewPos);
+	}
+	ClearFormationArray();
+}
+
+bool ADissPlayerController::CheckCollisionBetweenSelectedUnits(const TArray<AActor*>& SelectedUnits, AActor* ThisActor, AActor* OtherActor) {
+	int num = 0;
+	for (auto var : SelectedUnits) {
+		if (var == ThisActor || var == OtherActor) {
+			num += 1;
+		}
+	}
+
+	if (num == 2) {
+		return true;
+	}
+	else {
+		return false;
 	}
 }
