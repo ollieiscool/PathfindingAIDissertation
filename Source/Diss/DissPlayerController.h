@@ -88,6 +88,9 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "Formation Navigation")
 	TArray<FVector> DragFormation(const TArray<AActor*>& SelectedUnits, FVector StartPos, float DifferenceInPos, FVector MiddlePosition, FRotator LineRotation);
 
+	UFUNCTION(BlueprintCallable, Category = "Formation Navigation")
+	void DrawDraggedFormation(TArray<FVector> PositionsToDraw);
+
 	UPROPERTY(EditAnywhere)
 	 TSubclassOf<AActor> actorToSpawn;
 
@@ -105,6 +108,9 @@ protected:
 
 private:
 	FVector CachedDestination;
+
+	UFUNCTION(Category = "Formation Navigation")
+	void FillPositionsArray();
 
 	bool bIsTouch; // Is it a touch device
 	float FollowTime; // For how long it has been pressed

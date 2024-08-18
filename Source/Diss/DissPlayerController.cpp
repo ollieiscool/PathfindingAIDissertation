@@ -131,13 +131,7 @@ void ADissPlayerController::OnTouchReleased()
 void ADissPlayerController::DrawFormation(const TArray<AActor*>& SelectedUnits, FRotator CameraRotation) {
 	if (Positions.IsEmpty()) {
 		formation->GetPositions(FormationPos, Positions, MouseHitLocation, SelectedUnits.Num(), 6, 80, CameraRotation, false);
-		APositionInFormation* NewPos;
-		for (int i = 0; i < FormationPos.Num(); i++) {
-			NewPos = NewObject<APositionInFormation>();
-			NewPos->SetPosition(FormationPos[i]);
-			Positions.Add(NewPos);
-		}
-		FormationPos.Empty();
+		FillPositionsArray();
 	}
 	else {
 		formation->GetPositions(FormationPos, Positions, MouseHitLocation, SelectedUnits.Num(), 6, 80, CameraRotation, true);
@@ -224,12 +218,36 @@ void ADissPlayerController::ClearPositionsArray() {
 TArray<FVector> ADissPlayerController::DragFormation(const TArray<AActor*>& SelectedUnits, FVector StartPos, float DifferenceInPos, FVector MiddlePosition, FRotator LineRotation) {
 	float divided = DifferenceInPos / 80;
 	FString s = FString::FromInt((int)divided);
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, s);
-	TArray<FVector> DragPos;
 	int LineLength = (int)divided;
-	return formation->DragLine(StartPos, SelectedUnits.Num(), LineLength, 80, LineRotation);
+	formation->DragLine(FormationPos, StartPos, SelectedUnits.Num(), LineLength + 1, 80, LineRotation);
+	return FormationPos;
+}
+
+void ADissPlayerController::DrawDraggedFormation(TArray<FVector> PositionsToDraw) {
+	if (Positions.IsEmpty()) {
+		FormationPos = PositionsToDraw;
+		FillPositionsArray();
+	}
+	else {
+		
+		for (int i = 0; i < PositionsToDraw.Num(); i++) {
+			Positions[i]->SetPosition(PositionsToDraw[i]);
+			Positions[i]->SetIsReserved(false);
+		}
+	}
+
 }
 
 void ADissPlayerController::ClearFormationArray() {
 	FormationPos.Empty();
+}
+
+void ADissPlayerController::FillPositionsArray() {
+	APositionInFormation* NewPos;
+	for (int i = 0; i < FormationPos.Num(); i++) {
+		NewPos = NewObject<APositionInFormation>();
+		NewPos->SetPosition(FormationPos[i]);
+		Positions.Add(NewPos);
+	}
+	ClearFormationArray();
 }

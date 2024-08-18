@@ -24,7 +24,7 @@ public:
 	void GetPositions(TArray<FVector>& FormationPos, TArray<APositionInFormation*> Positions, FVector MouseHitLocation, int NumOfUnitsSelected, int LengthOfLine = 5, float UnitOffset = 80, FRotator CameraRotation = FRotator(0,0,0), bool IsMoving = false);
 
 	UFUNCTION(BlueprintCallable, Category = "Formation Navigation")
-	TArray<FVector> DragLine(FVector MouseHitLocation, int NumOfUnitsSelected, int LengthOfLine, float UnitOffset, FRotator LineRotation);
+	void DragLine(TArray<FVector>& FormationPos, FVector MouseHitLocation, int NumOfUnitsSelected, int LengthOfLine, float UnitOffset, FRotator LineRotation);
 
 	UFUNCTION(Category = "Formation Navigation")
 	FVector Find8thOfWay(FVector TargetPosition, FVector CurrentPos);
