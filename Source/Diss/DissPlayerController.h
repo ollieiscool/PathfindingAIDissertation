@@ -91,6 +91,9 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "Formation Navigation")
 	void DrawDraggedFormation(TArray<FVector> PositionsToDraw);
 
+	UFUNCTION(BlueprintCallable, Category = "Collision Detection")
+	bool CheckCollisionBetweenSelectedUnits(const TArray<AActor*>& SelectedUnits, AActor* ThisActor, AActor* OtherActor);
+
 	UPROPERTY(EditAnywhere)
 	 TSubclassOf<AActor> actorToSpawn;
 

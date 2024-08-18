@@ -251,3 +251,19 @@ void ADissPlayerController::FillPositionsArray() {
 	}
 	ClearFormationArray();
 }
+
+bool ADissPlayerController::CheckCollisionBetweenSelectedUnits(const TArray<AActor*>& SelectedUnits, AActor* ThisActor, AActor* OtherActor) {
+	int num = 0;
+	for (auto var : SelectedUnits) {
+		if (var == ThisActor || var == OtherActor) {
+			num += 1;
+		}
+	}
+
+	if (num == 2) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
