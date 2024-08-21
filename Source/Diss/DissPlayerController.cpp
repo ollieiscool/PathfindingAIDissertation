@@ -130,11 +130,35 @@ void ADissPlayerController::OnTouchReleased()
 //Unit Nav and formation logic, Oliver Perrin
 void ADissPlayerController::DrawFormation(const TArray<AActor*>& SelectedUnits, FRotator CameraRotation) {
 	if (Positions.IsEmpty()) {
-		formation->GetPositions(FormationPos, Positions, MouseHitLocation, SelectedUnits.Num(), 6, 80, CameraRotation, false);
+		switch (FormationEnum)
+		{
+		case EFormationType::LINE:
+			formation->GetLinePositions(FormationPos, Positions, MouseHitLocation, SelectedUnits.Num(), 6, 80, CameraRotation, false);
+			break;
+		case EFormationType::SQUARE:
+			formation->GetSquarePositions(FormationPos, Positions, MouseHitLocation, SelectedUnits.Num(), 80, CameraRotation, false);
+			break;
+		case EFormationType::WEDGE:
+			formation->GetWedgePositions(FormationPos, Positions, MouseHitLocation, SelectedUnits.Num(), 80, CameraRotation, false);
+			break;
+		}
+
 		FillPositionsArray();
 	}
 	else {
-		formation->GetPositions(FormationPos, Positions, MouseHitLocation, SelectedUnits.Num(), 6, 80, CameraRotation, true);
+		switch (FormationEnum) 
+		{
+		case EFormationType::LINE:
+			formation->GetLinePositions(FormationPos, Positions, MouseHitLocation, SelectedUnits.Num(), 6, 80, CameraRotation, true);
+			break;
+		case EFormationType::SQUARE:
+			formation->GetSquarePositions(FormationPos, Positions, MouseHitLocation, SelectedUnits.Num(), 80, CameraRotation, true);
+			break;
+		case EFormationType::WEDGE:
+			formation->GetWedgePositions(FormationPos, Positions, MouseHitLocation, SelectedUnits.Num(), 80, CameraRotation, true);
+			break;
+		}
+
 		for (int i = 0; i < Positions.Num(); i++) {
 			Positions[i]->SetIsReserved(false); 
 		}
@@ -219,7 +243,18 @@ TArray<FVector> ADissPlayerController::DragFormation(const TArray<AActor*>& Sele
 	float divided = DifferenceInPos / 80;
 	FString s = FString::FromInt((int)divided);
 	int LineLength = (int)divided;
-	formation->DragLine(FormationPos, StartPos, SelectedUnits.Num(), LineLength + 1, 80, LineRotation);
+	switch (FormationEnum) 
+	{
+	case EFormationType::LINE:
+		formation->DragLine(FormationPos, StartPos, SelectedUnits.Num(), LineLength + 1, 80, LineRotation);
+		break;
+	case EFormationType::SQUARE:
+		formation->DragSquare(FormationPos, StartPos, SelectedUnits.Num(), LineLength + 1, 80, LineRotation);
+		break;
+	case EFormationType::WEDGE:
+		formation->DragWedge(FormationPos, StartPos, SelectedUnits.Num(), LineLength + 1, 80, LineRotation);
+		break;
+	}
 	return FormationPos;
 }
 

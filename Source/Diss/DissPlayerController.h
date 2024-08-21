@@ -8,6 +8,7 @@
 #include "FormationClass.h"
 #include "PositionInFormation.h"
 #include "RTSUnit.h"
+#include "FormationType.h"
 #include "DissPlayerController.generated.h"
 
 /** Forward declaration to improve compiling times */
@@ -108,6 +109,9 @@ protected:
 
 	 UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	 bool IsMoving;
+
+	 UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	 EFormationType FormationEnum  = EFormationType::LINE;
 
 private:
 	FVector CachedDestination;
