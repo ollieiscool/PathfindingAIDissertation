@@ -138,8 +138,8 @@ void ADissPlayerController::DrawFormation(const TArray<AActor*>& SelectedUnits, 
 		case EFormationType::SQUARE:
 			formation->GetSquarePositions(FormationPos, Positions, MouseHitLocation, SelectedUnits.Num(), 80, CameraRotation, false);
 			break;
-		case EFormationType::DIAMOND:
-			formation->GetDiamondPositions(FormationPos, Positions, MouseHitLocation, SelectedUnits.Num(), 6, 80, CameraRotation, false);
+		case EFormationType::WEDGE:
+			formation->GetWedgePositions(FormationPos, Positions, MouseHitLocation, SelectedUnits.Num(), 80, CameraRotation, false);
 			break;
 		}
 
@@ -154,8 +154,8 @@ void ADissPlayerController::DrawFormation(const TArray<AActor*>& SelectedUnits, 
 		case EFormationType::SQUARE:
 			formation->GetSquarePositions(FormationPos, Positions, MouseHitLocation, SelectedUnits.Num(), 80, CameraRotation, true);
 			break;
-		case EFormationType::DIAMOND:
-			formation->GetDiamondPositions(FormationPos, Positions, MouseHitLocation, SelectedUnits.Num(), 6, 80, CameraRotation, true);
+		case EFormationType::WEDGE:
+			formation->GetWedgePositions(FormationPos, Positions, MouseHitLocation, SelectedUnits.Num(), 80, CameraRotation, true);
 			break;
 		}
 
@@ -251,7 +251,8 @@ TArray<FVector> ADissPlayerController::DragFormation(const TArray<AActor*>& Sele
 	case EFormationType::SQUARE:
 		formation->DragSquare(FormationPos, StartPos, SelectedUnits.Num(), LineLength + 1, 80, LineRotation);
 		break;
-	case EFormationType::DIAMOND:
+	case EFormationType::WEDGE:
+		formation->DragWedge(FormationPos, StartPos, SelectedUnits.Num(), LineLength + 1, 80, LineRotation);
 		break;
 	}
 	return FormationPos;

@@ -168,12 +168,72 @@ void UFormationClass::DragSquare(TArray<FVector>& FormationPos, FVector MouseHit
 	}
 }
 
-void UFormationClass::GetDiamondPositions(TArray<FVector>& FormationPos, TArray<APositionInFormation*> Positions, FVector MouseHitLocation, int NumOfUnitsSelected, int LengthOfLine, float UnitOffset, FRotator CameraRotation, bool IsMoving) {
+void UFormationClass::GetWedgePositions(TArray<FVector>& FormationPos, TArray<APositionInFormation*> Positions, FVector MouseHitLocation, int NumOfUnitsSelected, float UnitOffset, FRotator CameraRotation, bool IsMoving) {
+	float x = 0;
+	float y = UnitOffset;
+	FVector FirstPos;
+	FVector NextPos;
+	int CurrentLineLength = 0;
+	int TargetLineLength = 1;
+	FirstPos = MouseHitLocation;
 
+	for (int i = 0; i < NumOfUnitsSelected; i++) {
+		if (CurrentLineLength == TargetLineLength) {
+			x -= UnitOffset;
+			y = (TargetLineLength * -UnitOffset)/2;
+			TargetLineLength += 1;
+			CurrentLineLength = 0;
+		}
+		NextPos = CameraRotation.RotateVector(FVector(x, y, 0));
+
+		if (i == 0) {
+			if (IsMoving == false) {
+				FormationPos.Add(FirstPos);
+			}
+			else {
+				Positions[i]->SetPosition(FirstPos);
+			}
+		}
+		else {
+			if (IsMoving == false) {
+				FormationPos.Add(FirstPos + NextPos);
+			}
+			else {
+				Positions[i]->SetPosition(FirstPos + NextPos);
+			}
+			y += UnitOffset;
+		}
+		CurrentLineLength += 1;
+	}
 }
 
-void UFormationClass::DragDiamond(TArray<FVector>& FormationPos, FVector MouseHitLocation, int NumOfUnitsSelected, int LengthOfLine, float UnitOffset, FRotator LineRotation) {
+void UFormationClass::DragWedge(TArray<FVector>& FormationPos, FVector MouseHitLocation, int NumOfUnitsSelected, int LengthOfLine, float UnitOffset, FRotator LineRotation) {
+	float x = 0;
+	float y = UnitOffset;
+	FVector FirstPos;
+	FVector NextPos;
+	int CurrentLineLength = 0;
+	int TargetLineLength = LengthOfLine;
+	FirstPos = MouseHitLocation;
 
+	for (int i = 0; i < NumOfUnitsSelected; i++) {
+		if (CurrentLineLength == TargetLineLength) {
+			x -= UnitOffset;
+			y = (TargetLineLength * -UnitOffset) / (TargetLineLength + 1);
+			TargetLineLength += 1;
+			CurrentLineLength = 0;
+		}
+		NextPos = LineRotation.RotateVector(FVector(x, y, 0));
+
+		if (i == 0) {
+			FormationPos.Add(FirstPos);
+		}
+		else {
+			FormationPos.Add(FirstPos + NextPos);
+			y += UnitOffset;
+		}
+		CurrentLineLength += 1;
+	}
 }
 
 bool UFormationClass::IsSquare(double x) {
@@ -186,11 +246,14 @@ bool UFormationClass::IsSquare(double x) {
 
 TArray<double> UFormationClass::FindSquares(double min, double max) {
 	TArray<double> Squares;
-	for (double i = min; i <= max; i++) {
-		if (IsSquare(i)) {
-			Squares.Add(i);
-		}
+	double num1 = FMath::CeilToDouble(FMath::Sqrt(min));
+	double num2 = num1 * num1;
+	num1 = (num1 * 2) + 1;
+
+	while ((num2 >= 1 && num2 <= max)) {
+		Squares.Add(num2);
+		num2 = num2 + num1;
+		num1 += 2;
 	}
 	return Squares;
 }
-

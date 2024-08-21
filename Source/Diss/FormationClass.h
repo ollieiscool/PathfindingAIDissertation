@@ -27,7 +27,7 @@ public:
 	void GetSquarePositions(TArray<FVector>& FormationPos, TArray<APositionInFormation*> Positions, FVector MouseHitLocation, int NumOfUnitsSelected, float UnitOffset = 80, FRotator CameraRotation = FRotator(0, 0, 0), bool IsMoving = false);
 
 	UFUNCTION(Category = "Formation Navigation")
-	void GetDiamondPositions(TArray<FVector>& FormationPos, TArray<APositionInFormation*> Positions, FVector MouseHitLocation, int NumOfUnitsSelected, int LengthOfLine = 5, float UnitOffset = 80, FRotator CameraRotation = FRotator(0, 0, 0), bool IsMoving = false);
+	void GetWedgePositions(TArray<FVector>& FormationPos, TArray<APositionInFormation*> Positions, FVector MouseHitLocation, int NumOfUnitsSelected, float UnitOffset = 80, FRotator CameraRotation = FRotator(0, 0, 0), bool IsMoving = false);
 
 	UFUNCTION(BlueprintCallable, Category = "Formation Navigation")
 	void DragLine(TArray<FVector>& FormationPos, FVector MouseHitLocation, int NumOfUnitsSelected, int LengthOfLine, float UnitOffset, FRotator LineRotation);
@@ -36,7 +36,7 @@ public:
 	void DragSquare(TArray<FVector>& FormationPos, FVector MouseHitLocation, int NumOfUnitsSelected, int LengthOfLine, float UnitOffset, FRotator LineRotation);
 
 	UFUNCTION(BlueprintCallable, Category = "Formation Navigation")
-	void DragDiamond(TArray<FVector>& FormationPos, FVector MouseHitLocation, int NumOfUnitsSelected, int LengthOfLine, float UnitOffset, FRotator LineRotation);
+	void DragWedge(TArray<FVector>& FormationPos, FVector MouseHitLocation, int NumOfUnitsSelected, int LengthOfLine, float UnitOffset, FRotator LineRotation);
 
 	UFUNCTION(Category = "Formation Navigation")
 	FVector Find8thOfWay(FVector TargetPosition, FVector CurrentPos);
