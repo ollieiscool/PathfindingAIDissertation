@@ -74,10 +74,6 @@ void UFormationClass::DragLine(TArray<FVector>& FormationPos, FVector MouseHitLo
 	}
 }
 
-FVector UFormationClass::Find8thOfWay(FVector TargetPosition, FVector CurrentPos) {
-	return (TargetPosition - CurrentPos) / 8;
-}
-
 void UFormationClass::GetSquarePositions(TArray<FVector>& FormationPos, TArray<APositionInFormation*> Positions, FVector MouseHitLocation, int NumOfUnitsSelected, float UnitOffset, FRotator CameraRotation, bool IsMoving) {
 	float x = 0;
 	float y = UnitOffset;

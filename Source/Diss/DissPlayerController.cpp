@@ -224,17 +224,6 @@ TArray<AActor*> ADissPlayerController::SortSelectedUnitsArray(const TArray<AActo
 	}
 }
 
-TArray<FVector> ADissPlayerController::FindWaypoints(FVector TargetPosition, FVector CurrentPos) {
-	FVector Eighth = formation->Find8thOfWay(TargetPosition, CurrentPos);
-	TArray<FVector> Waypoints;
-	Waypoints.Add(Eighth + CurrentPos);
-	Waypoints.Add(Eighth + Eighth + CurrentPos);
-	Waypoints.Add(Eighth + Eighth + Eighth + CurrentPos);
-
-	Waypoints.Add(TargetPosition);
-	return Waypoints;
-}
-
 void ADissPlayerController::ClearPositionsArray() {
 	Positions.Empty();
 }
