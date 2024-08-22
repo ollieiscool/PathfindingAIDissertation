@@ -84,9 +84,6 @@ protected:
 	void ClearFormationArray();
 
 	UFUNCTION(BlueprintCallable, Category = "Formation Navigation")
-	TArray<FVector> FindWaypoints(FVector TargetPosition, FVector CurrentPos);
-
-	UFUNCTION(BlueprintCallable, Category = "Formation Navigation")
 	TArray<FVector> DragFormation(const TArray<AActor*>& SelectedUnits, FVector StartPos, float DifferenceInPos, FVector MiddlePosition, FRotator LineRotation);
 
 	UFUNCTION(BlueprintCallable, Category = "Formation Navigation")

@@ -38,9 +38,6 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Formation Navigation")
 	void DragWedge(TArray<FVector>& FormationPos, FVector MouseHitLocation, int NumOfUnitsSelected, int LengthOfLine, float UnitOffset, FRotator LineRotation);
 
-	UFUNCTION(Category = "Formation Navigation")
-	FVector Find8thOfWay(FVector TargetPosition, FVector CurrentPos);
-
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Formation Navigation")
 	FVector PreviousHitLocation;
